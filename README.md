@@ -1,4 +1,4 @@
-# rcraid
+# rcraid-patches
 Inofficial Patches for AMD RAID linux kernel modules (rcraid.ko)
 
 ## License and Disclaimer
