@@ -1,0 +1,178 @@
+diff -r -U 3 -Z driver_sdk/src/rc_init.c new/driver_sdk/src/rc_init.c
+--- driver_sdk/src/rc_init.c	2016-12-16 05:27:33.000000000 +0100
++++ new/driver_sdk/src/rc_init.c	2018-06-01 19:38:30.483123009 +0200
+@@ -169,7 +169,11 @@
+ void        rc_dump_scp(struct scsi_cmnd * scp);
+ const char *rc_info(struct Scsi_Host *host_ptr);
+ void        rc_timeout(int to);
++#if LINUX_VERSION_CODE < KERNEL_VERSION(4,15,0)
+ void        rc_timeout_done(unsigned long data);
++#else
++void        rc_timeout_done(struct timer_list * t);
++#endif
+ static int  rc_slave_cfg(struct scsi_device *sdev);
+ int         rc_bios_params(struct scsi_device *sdev, struct block_device *bdev,
+ 			   sector_t capacity, int geom[]);
+@@ -2383,12 +2387,20 @@
+ }
+ 
+ void
++#if LINUX_VERSION_CODE < KERNEL_VERSION(4,15,0)
+ rc_timeout_done(unsigned long data)
++#else
++rc_timeout_done(struct timer_list *t)
++#endif
+ {
+ 	rc_softstate_t *state;
+-
++#if LINUX_VERSION_CODE < KERNEL_VERSION(4,15,0)
+ 	state = (rc_softstate_t *)data;
+ 	init_timer(&state->rc_timeout);
++#else
++	state = from_timer(state, t, rc_timeout);
++	timer_setup(&state->rc_timeout, rc_timeout_done, 0);
++#endif
+ 	up(&state->rc_timeout_sema);
+ }
+ 
+@@ -2402,10 +2414,15 @@
+ 	 * set up timeout
+ 	 */
+ 
++#if LINUX_VERSION_CODE < KERNEL_VERSION(4,15,0)
+ 	init_timer(&state->rc_timeout);
+ 	state->rc_timeout.expires = jiffies  + to;
+ 	state->rc_timeout.data = (unsigned long)state;
+ 	state->rc_timeout.function = rc_timeout_done;
++#else
++	timer_setup(&state->rc_timeout, rc_timeout_done, 0);
++	state->rc_timeout.expires = jiffies + to;
++#endif
+ 	add_timer(&state->rc_timeout);
+ 	down(&state->rc_timeout_sema);
+ }
+diff -r -U 3 -Z driver_sdk/src/rc_mem_ops.c new/driver_sdk/src/rc_mem_ops.c
+--- driver_sdk/src/rc_mem_ops.c	2016-12-16 05:27:34.000000000 +0100
++++ new/driver_sdk/src/rc_mem_ops.c	2018-03-30 17:45:09.405544297 +0200
+@@ -19,6 +19,7 @@
+  *
+  ****************************************************************************/
+ 
++#include "linux/signal.h"
+ #include "linux/vmalloc.h"
+ #include "linux/wait.h"
+ #include "linux/sched.h"
+diff -r -U 3 -Z driver_sdk/src/rc_msg.c new/driver_sdk/src/rc_msg.c
+--- driver_sdk/src/rc_msg.c	2016-12-16 05:27:34.000000000 +0100
++++ new/driver_sdk/src/rc_msg.c	2018-06-01 19:42:38.549598402 +0200
+@@ -37,10 +37,18 @@
+ 
+ void rc_msg_send_srb_function (rc_softstate_t *state, int function_code);
+ 
++#if LINUX_VERSION_CODE < KERNEL_VERSION(4,15,0)
+ void rc_msg_timer(unsigned long data);
++#else
++void rc_msg_timer(struct timer_list * t);
++#endif
+ 
+ void rc_msg_timeout(int to);
++#if LINUX_VERSION_CODE < KERNEL_VERSION(4,15,0)
+ void rc_msg_timeout_done(unsigned long data);
++#else
++void rc_msg_timeout_done(struct timer_list * t);
++#endif
+ 
+ void rc_msg_isr(rc_adapter_t *adapter);
+ void rc_msg_schedule_dpc(void);
+@@ -1226,10 +1234,15 @@
+ 	/*
+ 	 * intialize the periodic timer for the OSIC
+ 	 */          
++#if LINUX_VERSION_CODE < KERNEL_VERSION(4,15,0)	 
+ 	init_timer(&state->timer);
+ 	state->timer.expires = jiffies  + state->timer_interval ;
+ 	state->timer.data = (unsigned long)state;
+ 	state->timer.function = rc_msg_timer;
++#else
++	timer_setup(&state->timer, rc_msg_timer, 0);
++	state->timer.expires = jiffies + state->timer_interval;	
++#endif
+ 	state->state |= ENABLE_TIMER;
+  
+ 	add_timer(&state->timer);
+@@ -1257,13 +1270,20 @@
+ 	return(0);
+ }
+ void
++#if LINUX_VERSION_CODE < KERNEL_VERSION(4,15,0)	 
+ rc_msg_timer(unsigned long data)
++#else
++rc_msg_timer(struct timer_list * t)
++#endif
+ {
+ 	rc_softstate_t *state;
+ 	rc_send_arg_t    args;
+ 
+-
++#if LINUX_VERSION_CODE < KERNEL_VERSION(4,15,0)	 
+ 	state = (rc_softstate_t *)data;
++#else
++	state = from_timer(state, t, timer);
++#endif
+ 
+ 	if ((state->state & ENABLE_TIMER) == 0)
+ 		return;
+@@ -1271,10 +1291,15 @@
+ 	/*
+ 	 * set up timeout
+ 	 */
++#if LINUX_VERSION_CODE < KERNEL_VERSION(4,15,0)	 	 
+ 	init_timer(&state->timer);
+ 	state->timer.expires = jiffies  + state->timer_interval;
+ 	state->timer.data = (unsigned long)state;
+ 	state->timer.function = rc_msg_timer;
++#else
++	timer_setup(&state->timer, rc_msg_timer,0);
++	state->timer.expires = jiffies + state->timer_interval;
++#endif
+ 	add_timer(&state->timer);
+ 
+ 	spin_lock(&state->osic_lock);
+@@ -2342,12 +2367,21 @@
+ 
+ 
+ void
++#if LINUX_VERSION_CODE < KERNEL_VERSION(4,15,0)	 	 
+ rc_msg_timeout_done(unsigned long data)
++#else
++rc_msg_timeout_done(struct timer_list * t)
++#endif
+ {
+ 	rc_softstate_t *state;
+ 
++#if LINUX_VERSION_CODE < KERNEL_VERSION(4,15,0)	 	 
+ 	state = (rc_softstate_t *)data;
+ 	init_timer(&state->msg_timeout);
++#else
++	state = from_timer(state, t, msg_timeout);
++	timer_setup(&state->msg_timeout, rc_msg_timeout_done, 0);
++#endif
+ 	up(&state->msg_timeout_sema);
+ }
+ 
+@@ -2361,10 +2395,15 @@
+ 	 * set up timeout
+ 	 */
+ 
++#if LINUX_VERSION_CODE < KERNEL_VERSION(4,15,0)	 	 
+ 	init_timer(&state->msg_timeout);
+ 	state->msg_timeout.expires = jiffies  + to;
+ 	state->msg_timeout.data = (unsigned long)state;
+ 	state->msg_timeout.function = rc_msg_timeout_done;
++#else
++	timer_setup(&state->msg_timeout, rc_msg_timeout_done, 0);
++	state->msg_timeout.expires = jiffies  + to;	
++#endif
+ 	add_timer(&state->msg_timeout);
+ 	down(&state->msg_timeout_sema);
+ 
