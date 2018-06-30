@@ -1,5 +1,5 @@
-diff -r -U3 test/driver_sdk/install new/driver_sdk/install
---- test/driver_sdk/install	2016-12-15 20:27:16.000000000 +0100
+diff -r -U3 driver_sdk/install new/driver_sdk/install
+--- driver_sdk/install	2016-12-15 20:27:16.000000000 +0100
 +++ new/driver_sdk/install	2018-06-30 17:11:28.196601864 +0200
 @@ -1,4 +1,4 @@
 -#!/bin/sh
@@ -7,8 +7,8 @@ diff -r -U3 test/driver_sdk/install new/driver_sdk/install
  
  #  Script to install the RAIDCore drivers from the SDK for supported platforms
  #  (RedHat and SuSE). 
-diff -r -U3 test/driver_sdk/src/common_shell new/driver_sdk/src/common_shell
---- test/driver_sdk/src/common_shell	2016-12-15 20:27:22.000000000 +0100
+diff -r -U3 driver_sdk/src/common_shell new/driver_sdk/src/common_shell
+--- driver_sdk/src/common_shell	2016-12-15 20:27:22.000000000 +0100
 +++ new/driver_sdk/src/common_shell	2018-06-30 17:12:37.584197823 +0200
 @@ -1,4 +1,4 @@
 -#!/bin/sh
@@ -16,8 +16,8 @@ diff -r -U3 test/driver_sdk/src/common_shell new/driver_sdk/src/common_shell
  
  # Common shell routines used by the top level install script (SDK and driver
  # disks) and also from the OS specific scripts in the SDK (also contains
-diff -r -U3 test/driver_sdk/src/install_rh new/driver_sdk/src/install_rh
---- test/driver_sdk/src/install_rh	2016-12-15 20:27:24.000000000 +0100
+diff -r -U3 driver_sdk/src/install_rh new/driver_sdk/src/install_rh
+--- driver_sdk/src/install_rh	2016-12-15 20:27:24.000000000 +0100
 +++ new/driver_sdk/src/install_rh	2018-06-30 17:12:54.536064242 +0200
 @@ -1,4 +1,4 @@
 -#!/bin/sh 
@@ -25,8 +25,8 @@ diff -r -U3 test/driver_sdk/src/install_rh new/driver_sdk/src/install_rh
  
  #  Script to install the driver into the /lib/modules tree for RedHat distros. 
  #  By default new drivers will be installed for the currently running kernel.
-diff -r -U3 test/driver_sdk/src/install_suse new/driver_sdk/src/install_suse
---- test/driver_sdk/src/install_suse	2016-12-15 20:27:24.000000000 +0100
+diff -r -U3 driver_sdk/src/install_suse new/driver_sdk/src/install_suse
+--- driver_sdk/src/install_suse	2016-12-15 20:27:24.000000000 +0100
 +++ new/driver_sdk/src/install_suse	2018-06-30 17:13:07.755952816 +0200
 @@ -1,4 +1,4 @@
 -#!/bin/sh 
@@ -34,8 +34,8 @@ diff -r -U3 test/driver_sdk/src/install_suse new/driver_sdk/src/install_suse
  
  #  Script to install the driver into the /lib/modules tree for SuSE distros. 
  #  By default new drivers will be installed for the currently running kernel.
-diff -r -U3 test/driver_sdk/src/Makefile new/driver_sdk/src/Makefile
---- test/driver_sdk/src/Makefile	2016-12-15 20:27:24.000000000 +0100
+diff -r -U3 driver_sdk/src/Makefile new/driver_sdk/src/Makefile
+--- driver_sdk/src/Makefile	2016-12-15 20:27:24.000000000 +0100
 +++ new/driver_sdk/src/Makefile	2018-07-01 01:31:58.929400673 +0200
 @@ -30,6 +30,7 @@
  EXTRA_CFLAGS += -DRC_MPT2
@@ -45,8 +45,8 @@ diff -r -U3 test/driver_sdk/src/Makefile new/driver_sdk/src/Makefile
  
  # Build against an installed kernel object tree.
  # Either set the kernel version here or pass in the version.
-diff -r -U3 test/driver_sdk/src/rc_init.c new/driver_sdk/src/rc_init.c
---- test/driver_sdk/src/rc_init.c	2016-12-15 20:27:32.000000000 +0100
+diff -r -U3 driver_sdk/src/rc_init.c new/driver_sdk/src/rc_init.c
+--- driver_sdk/src/rc_init.c	2016-12-15 20:27:32.000000000 +0100
 +++ new/driver_sdk/src/rc_init.c	2018-06-12 22:19:05.274770329 +0200
 @@ -169,7 +169,11 @@
  void        rc_dump_scp(struct scsi_cmnd * scp);
@@ -98,8 +98,8 @@ diff -r -U3 test/driver_sdk/src/rc_init.c new/driver_sdk/src/rc_init.c
  	add_timer(&state->rc_timeout);
  	down(&state->rc_timeout_sema);
  }
-diff -r -U3 test/driver_sdk/src/rc_mem_ops.c new/driver_sdk/src/rc_mem_ops.c
---- test/driver_sdk/src/rc_mem_ops.c	2016-12-15 20:27:34.000000000 +0100
+diff -r -U3 driver_sdk/src/rc_mem_ops.c new/driver_sdk/src/rc_mem_ops.c
+--- driver_sdk/src/rc_mem_ops.c	2016-12-15 20:27:34.000000000 +0100
 +++ new/driver_sdk/src/rc_mem_ops.c	2018-06-12 22:19:05.342770084 +0200
 @@ -19,6 +19,7 @@
   *
@@ -109,8 +109,8 @@ diff -r -U3 test/driver_sdk/src/rc_mem_ops.c new/driver_sdk/src/rc_mem_ops.c
  #include "linux/vmalloc.h"
  #include "linux/wait.h"
  #include "linux/sched.h"
-diff -r -U3 test/driver_sdk/src/rc_msg.c new/driver_sdk/src/rc_msg.c
---- test/driver_sdk/src/rc_msg.c	2016-12-15 20:27:34.000000000 +0100
+diff -r -U3 driver_sdk/src/rc_msg.c new/driver_sdk/src/rc_msg.c
+--- driver_sdk/src/rc_msg.c	2016-12-15 20:27:34.000000000 +0100
 +++ new/driver_sdk/src/rc_msg.c	2018-06-12 22:19:05.350770055 +0200
 @@ -37,10 +37,18 @@
  
@@ -223,8 +223,8 @@ diff -r -U3 test/driver_sdk/src/rc_msg.c new/driver_sdk/src/rc_msg.c
  	add_timer(&state->msg_timeout);
  	down(&state->msg_timeout_sema);
  
-diff -r -U3 test/driver_sdk/src/uninstall_rh new/driver_sdk/src/uninstall_rh
---- test/driver_sdk/src/uninstall_rh	2016-12-15 20:27:38.000000000 +0100
+diff -r -U3 driver_sdk/src/uninstall_rh new/driver_sdk/src/uninstall_rh
+--- driver_sdk/src/uninstall_rh	2016-12-15 20:27:38.000000000 +0100
 +++ new/driver_sdk/src/uninstall_rh	2018-06-30 17:13:37.483682373 +0200
 @@ -1,4 +1,4 @@
 -#!/bin/sh
@@ -232,8 +232,8 @@ diff -r -U3 test/driver_sdk/src/uninstall_rh new/driver_sdk/src/uninstall_rh
  
  #
  # Script to remove the driver(s) from an existing SuSE linux install
-diff -r -U3 test/driver_sdk/src/uninstall_suse new/driver_sdk/src/uninstall_suse
---- test/driver_sdk/src/uninstall_suse	2016-12-15 20:27:38.000000000 +0100
+diff -r -U3 driver_sdk/src/uninstall_suse new/driver_sdk/src/uninstall_suse
+--- driver_sdk/src/uninstall_suse	2016-12-15 20:27:38.000000000 +0100
 +++ new/driver_sdk/src/uninstall_suse	2018-06-30 17:13:47.011590619 +0200
 @@ -1,4 +1,4 @@
 -#!/bin/sh 
@@ -241,8 +241,8 @@ diff -r -U3 test/driver_sdk/src/uninstall_suse new/driver_sdk/src/uninstall_suse
  #
  # Script to remove the driver(s) from an existing SuSE linux install
  # 
-diff -r -U3 test/driver_sdk/uninstall new/driver_sdk/uninstall
---- test/driver_sdk/uninstall	2016-12-15 20:27:18.000000000 +0100
+diff -r -U3 driver_sdk/uninstall new/driver_sdk/uninstall
+--- driver_sdk/uninstall	2016-12-15 20:27:18.000000000 +0100
 +++ new/driver_sdk/uninstall	2018-06-30 17:11:38.232560682 +0200
 @@ -1,4 +1,4 @@
 -#!/bin/sh
