@@ -2,6 +2,10 @@
 
 ### c1b10e0 Made platform detection portable (use of "uname -m"), updated README.md, added CHANGELOG.md
 
+Replaced `uname -i` to `uname -m` in Makefile for platform detection, since
+`uname -i` is not portable across Linux flavors. Also added CHANGELOG.md and
+updated README.md. 
+
 ### ed4f557 Changed shell from /bin/sh to /bin/bash in all shell scripts
 
 In legacy Linux versions, `/bin/sh` was a link to `/bin/bash`. Nowadays the
