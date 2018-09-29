@@ -22,7 +22,7 @@ AMD RAID driver. For a complete description, see file
 ## Patching instructions
 
 First download the AMD Linux RAID driver from the [official AMD Raid driver
-page](https://support.amd.com/de-de/download/chipset?os=Linux+x86_64). (You
+page](https://www.amd.com/en/support/chipsets/amd-socket-am4/x370). (You
 need to accept the license.) Go to your download folder and unzip the
 downloaded file,
 
@@ -54,7 +54,7 @@ Congratulations! You are done with patching.
 [Download the latest Ubuntu 18.04
 image](https://www.ubuntu.com/download/desktop), install it on a USB stick and
 boot it in UEFI mode (turn of CSM module in BIOS). After booting, download
-the official [AMD RAID driver](https://support.amd.com/de-de/download/chipset?os=Linux+x86_64). Open
+the official [AMD RAID driver](https://www.amd.com/en/support/chipsets/amd-socket-am4/x370). Open
 a shell and follow these instructions:
 
       cd Downloads/
