@@ -1,5 +1,7 @@
 # Changelog
 
+### b128f38 Added conditional define for SECTOR_SIZE to avoid compile time warning
+
 ### c1b10e0 Made platform detection portable (use of "uname -m"), updated README.md, added CHANGELOG.md
 
 Replaced `uname -i` to `uname -m` in Makefile for platform detection, since
