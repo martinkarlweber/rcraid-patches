@@ -1,6 +1,6 @@
 diff -r -U3 old/driver_sdk/install new/driver_sdk/install
 --- old/driver_sdk/install	2016-12-15 20:27:16.000000000 +0100
-+++ new/driver_sdk/install	2018-09-16 19:18:27.731702569 +0200
++++ new/driver_sdk/install	2018-09-16 22:30:34.801569166 +0200
 @@ -1,4 +1,4 @@
 -#!/bin/sh
 +#!/bin/bash
@@ -9,7 +9,7 @@ diff -r -U3 old/driver_sdk/install new/driver_sdk/install
  #  (RedHat and SuSE). 
 diff -r -U3 old/driver_sdk/src/Makefile new/driver_sdk/src/Makefile
 --- old/driver_sdk/src/Makefile	2016-12-15 20:27:24.000000000 +0100
-+++ new/driver_sdk/src/Makefile	2018-09-16 19:23:53.122266046 +0200
++++ new/driver_sdk/src/Makefile	2018-09-16 22:30:34.801569166 +0200
 @@ -20,7 +20,7 @@
  RC_USER=$(shell whoami)
  RC_DATE=$(shell /bin/date)
@@ -21,7 +21,7 @@ diff -r -U3 old/driver_sdk/src/Makefile new/driver_sdk/src/Makefile
  EXTRA_CFLAGS += -DRC_AHCI_SUPPORT -DRC_AMD_AHCI -DRC_AHCI_AUTOSENSE
 diff -r -U3 old/driver_sdk/src/common_shell new/driver_sdk/src/common_shell
 --- old/driver_sdk/src/common_shell	2016-12-15 20:27:22.000000000 +0100
-+++ new/driver_sdk/src/common_shell	2018-09-16 19:18:27.731702569 +0200
++++ new/driver_sdk/src/common_shell	2018-09-16 22:30:34.801569166 +0200
 @@ -1,4 +1,4 @@
 -#!/bin/sh
 +#!/bin/bash
@@ -30,7 +30,7 @@ diff -r -U3 old/driver_sdk/src/common_shell new/driver_sdk/src/common_shell
  # disks) and also from the OS specific scripts in the SDK (also contains
 diff -r -U3 old/driver_sdk/src/install_rh new/driver_sdk/src/install_rh
 --- old/driver_sdk/src/install_rh	2016-12-15 20:27:24.000000000 +0100
-+++ new/driver_sdk/src/install_rh	2018-09-16 19:18:27.731702569 +0200
++++ new/driver_sdk/src/install_rh	2018-09-16 22:30:34.801569166 +0200
 @@ -1,4 +1,4 @@
 -#!/bin/sh 
 +#!/bin/bash
@@ -39,16 +39,29 @@ diff -r -U3 old/driver_sdk/src/install_rh new/driver_sdk/src/install_rh
  #  By default new drivers will be installed for the currently running kernel.
 diff -r -U3 old/driver_sdk/src/install_suse new/driver_sdk/src/install_suse
 --- old/driver_sdk/src/install_suse	2016-12-15 20:27:24.000000000 +0100
-+++ new/driver_sdk/src/install_suse	2018-09-16 19:18:27.731702569 +0200
++++ new/driver_sdk/src/install_suse	2018-09-16 22:30:34.801569166 +0200
 @@ -1,4 +1,4 @@
 -#!/bin/sh 
 +#!/bin/bash
  
  #  Script to install the driver into the /lib/modules tree for SuSE distros. 
  #  By default new drivers will be installed for the currently running kernel.
+diff -r -U3 old/driver_sdk/src/rc_adapter.h new/driver_sdk/src/rc_adapter.h
+--- old/driver_sdk/src/rc_adapter.h	2016-12-15 20:27:30.000000000 +0100
++++ new/driver_sdk/src/rc_adapter.h	2019-02-10 15:21:14.151844317 +0100
+@@ -40,7 +40,9 @@
+ #define MAX_HBA             8
+ #define MAX_TOTAL_PORTS     (MAX_HBA * MAX_PORTS_PER_HA)
+ #define MAX_ARRAY           32
++#ifndef SECTOR_SIZE
+ #define SECTOR_SIZE         512
++#endif
+ 
+ #define PCI_CFG_SIZE    256
+ typedef struct rc_hw_info {
 diff -r -U3 old/driver_sdk/src/rc_init.c new/driver_sdk/src/rc_init.c
 --- old/driver_sdk/src/rc_init.c	2016-12-15 20:27:32.000000000 +0100
-+++ new/driver_sdk/src/rc_init.c	2018-09-16 19:18:27.731702569 +0200
++++ new/driver_sdk/src/rc_init.c	2018-09-16 22:30:34.801569166 +0200
 @@ -169,7 +169,11 @@
  void        rc_dump_scp(struct scsi_cmnd * scp);
  const char *rc_info(struct Scsi_Host *host_ptr);
@@ -101,7 +114,7 @@ diff -r -U3 old/driver_sdk/src/rc_init.c new/driver_sdk/src/rc_init.c
  }
 diff -r -U3 old/driver_sdk/src/rc_mem_ops.c new/driver_sdk/src/rc_mem_ops.c
 --- old/driver_sdk/src/rc_mem_ops.c	2016-12-15 20:27:34.000000000 +0100
-+++ new/driver_sdk/src/rc_mem_ops.c	2018-09-16 19:18:27.731702569 +0200
++++ new/driver_sdk/src/rc_mem_ops.c	2018-09-16 22:30:34.801569166 +0200
 @@ -19,6 +19,7 @@
   *
   ****************************************************************************/
@@ -112,7 +125,7 @@ diff -r -U3 old/driver_sdk/src/rc_mem_ops.c new/driver_sdk/src/rc_mem_ops.c
  #include "linux/sched.h"
 diff -r -U3 old/driver_sdk/src/rc_msg.c new/driver_sdk/src/rc_msg.c
 --- old/driver_sdk/src/rc_msg.c	2016-12-15 20:27:34.000000000 +0100
-+++ new/driver_sdk/src/rc_msg.c	2018-09-16 19:18:27.731702569 +0200
++++ new/driver_sdk/src/rc_msg.c	2018-09-16 22:30:34.801569166 +0200
 @@ -37,10 +37,18 @@
  
  void rc_msg_send_srb_function (rc_softstate_t *state, int function_code);
@@ -226,7 +239,7 @@ diff -r -U3 old/driver_sdk/src/rc_msg.c new/driver_sdk/src/rc_msg.c
  
 diff -r -U3 old/driver_sdk/src/uninstall_rh new/driver_sdk/src/uninstall_rh
 --- old/driver_sdk/src/uninstall_rh	2016-12-15 20:27:38.000000000 +0100
-+++ new/driver_sdk/src/uninstall_rh	2018-09-16 19:18:27.735702732 +0200
++++ new/driver_sdk/src/uninstall_rh	2018-09-16 22:30:34.805569156 +0200
 @@ -1,4 +1,4 @@
 -#!/bin/sh
 +#!/bin/bash
@@ -235,7 +248,7 @@ diff -r -U3 old/driver_sdk/src/uninstall_rh new/driver_sdk/src/uninstall_rh
  # Script to remove the driver(s) from an existing SuSE linux install
 diff -r -U3 old/driver_sdk/src/uninstall_suse new/driver_sdk/src/uninstall_suse
 --- old/driver_sdk/src/uninstall_suse	2016-12-15 20:27:38.000000000 +0100
-+++ new/driver_sdk/src/uninstall_suse	2018-09-16 19:18:27.735702732 +0200
++++ new/driver_sdk/src/uninstall_suse	2018-09-16 22:30:34.805569156 +0200
 @@ -1,4 +1,4 @@
 -#!/bin/sh 
 +#!/bin/bash
@@ -244,7 +257,7 @@ diff -r -U3 old/driver_sdk/src/uninstall_suse new/driver_sdk/src/uninstall_suse
  # 
 diff -r -U3 old/driver_sdk/uninstall new/driver_sdk/uninstall
 --- old/driver_sdk/uninstall	2016-12-15 20:27:18.000000000 +0100
-+++ new/driver_sdk/uninstall	2018-09-16 19:18:27.735702732 +0200
++++ new/driver_sdk/uninstall	2018-09-16 22:30:34.805569156 +0200
 @@ -1,4 +1,4 @@
 -#!/bin/sh
 +#!/bin/bash
