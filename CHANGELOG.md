@@ -1,5 +1,11 @@
 # Changelog
 
+### 06d6476 Kernel 4.20 (missing symbols)
+
+Due to changes to the kernel build system, the rcblob was not picked up in the
+linking stage, leading to missing symbols in the rcraid.ko kernel module.
+Fixed by changing Makefile destinations and rules.
+
 ### b128f38 Added conditional define for SECTOR_SIZE to avoid compile time warning
 
 ### c1b10e0 Made platform detection portable (use of "uname -m"), updated README.md, added CHANGELOG.md
