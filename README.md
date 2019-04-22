@@ -1,4 +1,5 @@
 # rcraid-patches
+
 Inofficial Patches for AMD RAID linux kernel modules (rcraid.ko)
 
 ## License and Disclaimer
@@ -9,17 +10,21 @@ permissions and liability.
 
 ## Description
 
-As its main feature, this patch incorporates the changes from `init_timer()`
-to `timer_setup()` which are necessary in Linux kernel starting from version
-4.15. Since it tests for the kernel version, it should also run on kernels
-with versions below 4.15. The patch has been successfully tested on Ubuntu
-18.04. More changes came in as users reported problems in other places of the
-AMD RAID driver. For a complete description, see file
+These patches bundle several fixes to the rcraid kernel module source code in
+order to make it compile under newer kernel versions than those officially
+supported in 2017 by AMD. It has been tested with Ubuntu 18.04, 18.10 and
+19.04, but should run on other Linux flavors as well.
+
+For a complete description of fixes, see file
 [CHANGELOG.md](https://github.com/martinkarlweber/rcraid-patches/blob/master/CHANGELOG.md).
 
 
-
 ## Patching instructions
+
+Applying the patches is done by hand and cumbersome. A more convenient way may
+be to use the [rcraid-dkms package from Thomas Karl Pietrowski
+(@thopiekar)](https://github.com/thopiekar/rcraid-dkms). If you still want to
+use this package, follow these instructions:
 
 First download the AMD Linux RAID driver from the [official AMD Raid driver
 page](https://www.amd.com/en/support/chipsets/amd-socket-am4/x370). (You
@@ -94,7 +99,3 @@ If everything goes well, you will see an output similar to
        sdb: sdb1 sdb2 sdb3
       sd 0:0:0:0: [sdb] Attached SCSI disk
 
-## More on installation and dual booting with Windows
-
-For a complete and detailed set of instructions on how to install and use the
-AMD RAID Linux driver, have a look at [How to dual boot Windows and Ubuntu on AMD RAID](https://www.kwikr.de//Howto_Windows_Ubuntu_AMD-RAID.html).
