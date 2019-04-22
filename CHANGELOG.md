@@ -1,5 +1,9 @@
 # Changelog
 
+### 34222c2 Kernel 5.0.0 changes
+
+Added fix from @Herrie82 for kernel version 5.0.0 and above. Documentation updated.
+
 ### 06d6476 Kernel 4.20 (missing symbols)
 
 Due to changes to the kernel build system, the rcblob was not picked up in the
