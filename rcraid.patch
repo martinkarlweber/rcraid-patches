@@ -80,7 +80,7 @@ diff -r -U3 old/driver_sdk/src/rc_adapter.h new/driver_sdk/src/rc_adapter.h
  typedef struct rc_hw_info {
 diff -r -U3 old/driver_sdk/src/rc_init.c new/driver_sdk/src/rc_init.c
 --- old/driver_sdk/src/rc_init.c	2016-12-15 20:27:32.000000000 +0100
-+++ new/driver_sdk/src/rc_init.c	2018-09-16 22:30:34.801569166 +0200
++++ new/driver_sdk/src/rc_init.c	2019-04-22 20:53:21.484231806 +0200
 @@ -169,7 +169,11 @@
  void        rc_dump_scp(struct scsi_cmnd * scp);
  const char *rc_info(struct Scsi_Host *host_ptr);
@@ -93,7 +93,17 @@ diff -r -U3 old/driver_sdk/src/rc_init.c new/driver_sdk/src/rc_init.c
  static int  rc_slave_cfg(struct scsi_device *sdev);
  int         rc_bios_params(struct scsi_device *sdev, struct block_device *bdev,
  			   sector_t capacity, int geom[]);
-@@ -2383,12 +2387,20 @@
+@@ -342,7 +346,9 @@
+ #if LINUX_VERSION_CODE == KERNEL_VERSION(2,6,24)
+ 	.use_sg_chaining =         ENABLE_SG_CHAINING,
+ #endif
++#if LINUX_VERSION_CODE < KERNEL_VERSION(5, 0, 0)
+ 	.use_clustering =          ENABLE_CLUSTERING,
++#endif
+ 	.slave_configure =         rc_slave_cfg,
+ };
+ 
+@@ -2383,12 +2389,20 @@
  }
  
  void
@@ -115,7 +125,7 @@ diff -r -U3 old/driver_sdk/src/rc_init.c new/driver_sdk/src/rc_init.c
  	up(&state->rc_timeout_sema);
  }
  
-@@ -2402,10 +2414,15 @@
+@@ -2402,10 +2416,15 @@
  	 * set up timeout
  	 */
  
@@ -144,7 +154,7 @@ diff -r -U3 old/driver_sdk/src/rc_mem_ops.c new/driver_sdk/src/rc_mem_ops.c
  #include "linux/sched.h"
 diff -r -U3 old/driver_sdk/src/rc_msg.c new/driver_sdk/src/rc_msg.c
 --- old/driver_sdk/src/rc_msg.c	2016-12-15 20:27:34.000000000 +0100
-+++ new/driver_sdk/src/rc_msg.c	2018-09-16 22:30:34.801569166 +0200
++++ new/driver_sdk/src/rc_msg.c	2019-04-22 21:04:04.121303750 +0200
 @@ -37,10 +37,18 @@
  
  void rc_msg_send_srb_function (rc_softstate_t *state, int function_code);
@@ -164,7 +174,33 @@ diff -r -U3 old/driver_sdk/src/rc_msg.c new/driver_sdk/src/rc_msg.c
  
  void rc_msg_isr(rc_adapter_t *adapter);
  void rc_msg_schedule_dpc(void);
-@@ -1226,10 +1234,15 @@
+@@ -200,15 +208,24 @@
+ int32_t
+ rc_vprintf(uint32_t severity, const char *format, va_list ar)
+ {
++#if LINUX_VERSION_CODE >= KERNEL_VERSION(5,0,0)
++	struct timespec ts;
++#else
+ 	struct timeval tv;
+-        static int rc_saw_newline=1;
++#endif
++	static int rc_saw_newline=1;
+ 
+ 	if (severity > rc_msg_level)
+ 		return 0;
+ 
+         if (severity && rc_saw_newline) {
++#if (LINUX_VERSION_CODE >= KERNEL_VERSION(5, 0, 0))
++		getnstimeofday(&ts);
++		printk("rcraid: (%li.%06li) ", ts.tv_sec, ts.tv_nsec / 1000);
++#else
+ 		do_gettimeofday(&tv);
+ 		printk("rcraid: (%li.%06li) ", tv.tv_sec, tv.tv_usec);
++#endif
+ 	}
+ 
+         rc_saw_newline = strchr(format, '\n') ? 1 : 0;
+@@ -1226,10 +1243,15 @@
  	/*
  	 * intialize the periodic timer for the OSIC
  	 */          
@@ -180,7 +216,7 @@ diff -r -U3 old/driver_sdk/src/rc_msg.c new/driver_sdk/src/rc_msg.c
  	state->state |= ENABLE_TIMER;
   
  	add_timer(&state->timer);
-@@ -1257,13 +1270,20 @@
+@@ -1257,13 +1279,20 @@
  	return(0);
  }
  void
@@ -202,7 +238,7 @@ diff -r -U3 old/driver_sdk/src/rc_msg.c new/driver_sdk/src/rc_msg.c
  
  	if ((state->state & ENABLE_TIMER) == 0)
  		return;
-@@ -1271,10 +1291,15 @@
+@@ -1271,10 +1300,15 @@
  	/*
  	 * set up timeout
  	 */
@@ -218,7 +254,7 @@ diff -r -U3 old/driver_sdk/src/rc_msg.c new/driver_sdk/src/rc_msg.c
  	add_timer(&state->timer);
  
  	spin_lock(&state->osic_lock);
-@@ -2342,12 +2367,21 @@
+@@ -2342,12 +2376,21 @@
  
  
  void
@@ -240,7 +276,7 @@ diff -r -U3 old/driver_sdk/src/rc_msg.c new/driver_sdk/src/rc_msg.c
  	up(&state->msg_timeout_sema);
  }
  
-@@ -2361,10 +2395,15 @@
+@@ -2361,10 +2404,15 @@
  	 * set up timeout
  	 */
  
@@ -255,6 +291,20 @@ diff -r -U3 old/driver_sdk/src/rc_msg.c new/driver_sdk/src/rc_msg.c
 +#endif
  	add_timer(&state->msg_timeout);
  	down(&state->msg_timeout_sema);
+ 
+@@ -2373,8 +2421,11 @@
+ void 
+ rc_msg_access_ok(rc_access_ok_t accessOk)
+ {
+-
+-    accessOk.returnStatus = access_ok( VERIFY_WRITE , accessOk.access_location, accessOk.access_size);        
++#if LINUX_VERSION_CODE >= KERNEL_VERSION(5, 0, 0)
++    accessOk.returnStatus = access_ok( accessOk.access_location, accessOk.access_size);
++#else
++    accessOk.returnStatus = access_ok( VERIFY_WRITE , accessOk.access_location, accessOk.access_size);
++#endif
+ }
+ 
  
 diff -r -U3 old/driver_sdk/src/uninstall_rh new/driver_sdk/src/uninstall_rh
 --- old/driver_sdk/src/uninstall_rh	2016-12-15 20:27:38.000000000 +0100
