@@ -59,8 +59,10 @@ Congratulations! You are done with patching.
 [Download the latest Ubuntu 18.04
 image](https://www.ubuntu.com/download/desktop), install it on a USB stick and
 boot it in UEFI mode (turn of CSM module in BIOS). After booting, download
-the official [AMD RAID driver](https://www.amd.com/en/support/chipsets/amd-socket-am4/x370). Open
-a shell and follow these instructions:
+the official [AMD RAID driver](https://www.amd.com/en/support/downloads/previous-drivers.html/chipsets/am4/x370.html).
+Look for the "Linux x86 64-bit driver" section and download the "AMD Raid Driver" 
+in the "Crimson ReLive Edition 17.2.1", released 2017-03-27. Download and save 
+the file. Then open a shell and follow these instructions:
 
       cd Downloads/
       unzip raid_linux_driver_8_01_00_039_public.zip
