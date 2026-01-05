@@ -1,6 +1,6 @@
 # Changelog
 
-### 9dfb036 Updated README.md
+### 0305fa3 Updated README.md
 
 Updated driver download link. Thanks to @manio for helping out.
 
