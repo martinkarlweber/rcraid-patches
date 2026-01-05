@@ -27,8 +27,10 @@ be to use the [rcraid-dkms package from Thomas Karl Pietrowski
 use this package, follow these instructions:
 
 First download the AMD Linux RAID driver from the [official AMD Raid driver
-page](https://www.amd.com/en/support/chipsets/amd-socket-am4/x370). (You
-need to accept the license.) Go to your download folder and unzip the
+page](https://www.amd.com/en/support/downloads/previous-drivers.html/chipsets/am4/x370.html). 
+Look for the "Linux x86 64-bit driver" section and download the "AMD Raid Driver" 
+in the "Crimson ReLive Edition 17.2.1", released 2017-03-27. Download and save 
+the file. (You need to accept the license.) Go to your download folder and unzip the
 downloaded file,
 
 `unzip raid_linux_driver_8_01_00_039_public.zip`
@@ -60,9 +62,7 @@ Congratulations! You are done with patching.
 image](https://www.ubuntu.com/download/desktop), install it on a USB stick and
 boot it in UEFI mode (turn of CSM module in BIOS). After booting, download
 the official [AMD RAID driver](https://www.amd.com/en/support/downloads/previous-drivers.html/chipsets/am4/x370.html).
-Look for the "Linux x86 64-bit driver" section and download the "AMD Raid Driver" 
-in the "Crimson ReLive Edition 17.2.1", released 2017-03-27. Download and save 
-the file. Then open a shell and follow these instructions:
+Then open a shell and follow these instructions:
 
       cd Downloads/
       unzip raid_linux_driver_8_01_00_039_public.zip
